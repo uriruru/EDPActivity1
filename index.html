@@ -181,125 +181,126 @@
 
     <!-- Section 5 -->
     <section class="hero is-large is-link">
-        <div class="hero-body" style="position: relative; overflow: hidden;">
-            <p class="title">Keyboard Event Listener Objective</p>
-            <p class="subtitle">Small interactive application that reacts to keyboard events.</p>
-            <button id="startButton">Start</button>
-            <button id="exitButton">Exit</button>
-            <div id="movingDiv" style="width: 100px; height: 100px; background-color: red; position: absolute;"></div>
-            <div id="notification" style="display: none; position: absolute; top: 0; left: 50%; transform: translateX(-50%); padding: 10px; background-color: #444; color: #fff; border-radius: 5px; z-index: 10;">
-                You can now move the red box
-                <button id="closeNotification" style="background: transparent; border: none; color: #fff; font-size: 16px; cursor: pointer; margin-left: 10px;">&times;</button>
-            </div>
+    <div class="hero-body" style="position: relative; overflow: hidden;">
+        <p class="title">Keyboard Event Listener Objective</p>
+        <p class="subtitle">Small interactive application that reacts to keyboard events.</p>
+        <button id="startButton">Start</button>
+        <button id="exitButton">Exit</button>
+        <div id="movingDiv" style="width: 100px; height: 100px; background-color: red; position: absolute;"></div>
+        <div id="notification" style="display: none; position: absolute; top: 0; left: 50%; transform: translateX(-50%); padding: 10px; background-color: #444; color: #fff; border-radius: 5px; z-index: 10;">
+            You can now move the red box
+            <button id="closeNotification" style="background: transparent; border: none; color: #fff; font-size: 16px; cursor: pointer; margin-left: 10px;">&times;</button>
         </div>
-    </section>
-    
-    <style>
-        button {
-            border: 2px solid #000;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #000;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 5px;
+    </div>
+</section>
+
+<style>
+    button {
+        border: 2px solid #000;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #000;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: #f0f0f0;
+    }
+
+    button:active {
+        background-color: #ddd;
+    }
+
+    #notification {
+        display: none; /* Hide initially */
+        position: absolute;
+        top: 10px; /* Adjust based on your layout */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px;
+        background-color: #444;
+        color: #fff;
+        border-radius: 5px;
+        z-index: 10;
+    }
+
+    #closeNotification {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+</style>
+
+<script>
+    const startButton = document.getElementById('startButton');
+    const exitButton = document.getElementById('exitButton');
+    const movingDiv = document.getElementById('movingDiv');
+    const notification = document.getElementById('notification');
+    const closeNotification = document.getElementById('closeNotification');
+    let isMoving = false;
+    let topPosition = 0;
+    let leftPosition = 0;
+
+    // Position the movingDiv slightly above the startButton
+    function positionDivAboveStartButton() {
+        const startButtonRect = startButton.getBoundingClientRect();
+        topPosition = startButtonRect.top - 110; // Lift the box above by 110px (adjust as needed)
+        leftPosition = startButtonRect.left;
+        movingDiv.style.top = topPosition + 'px';
+        movingDiv.style.left = leftPosition + 'px';
+    }
+
+    // Initial position when the page loads
+    window.addEventListener('load', positionDivAboveStartButton);
+
+    // Re-position when 'Start' button is clicked
+    startButton.addEventListener('click', () => {
+        isMoving = true;
+        positionDivAboveStartButton();
+        notification.style.display = 'block'; // Show notification
+    });
+
+    // Hide notification when 'Exit' button is clicked
+    exitButton.addEventListener('click', () => {
+        isMoving = false;
+        positionDivAboveStartButton(); // Reset and position the div
+        notification.style.display = 'none'; // Hide notification
+    });
+
+    closeNotification.addEventListener('click', () => {
+        notification.style.display = 'none'; // Hide notification
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (!isMoving) return;
+
+        switch (event.key) {
+            case 'ArrowUp':
+                topPosition -= 10;
+                break;
+            case 'ArrowDown':
+                topPosition += 10;
+                break;
+            case 'ArrowLeft':
+                leftPosition -= 10;
+                break;
+            case 'ArrowRight':
+                leftPosition += 10;
+                break;
         }
-    
-        button:hover {
-            background-color: #f0f0f0;
-        }
-    
-        button:active {
-            background-color: #ddd;
-        }
-    
-        #notification {
-            display: none; /* Hide initially */
-            position: absolute;
-            top: 10px; /* Adjust based on your layout */
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px;
-            background-color: #444;
-            color: #fff;
-            border-radius: 5px;
-            z-index: 10;
-        }
-    
-        #closeNotification {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-    </style>
-    
-    <script>
-        const startButton = document.getElementById('startButton');
-        const exitButton = document.getElementById('exitButton');
-        const movingDiv = document.getElementById('movingDiv');
-        const notification = document.getElementById('notification');
-        const closeNotification = document.getElementById('closeNotification');
-        let isMoving = false;
-        let topPosition = 0;
-        let leftPosition = 0;
-    
-        // Position the movingDiv slightly above the startButton
-        function positionDivAboveStartButton() {
-            const startButtonRect = startButton.getBoundingClientRect();
-            topPosition = startButtonRect.top - 110; // Lift the box above by 110px (adjust as needed)
-            leftPosition = startButtonRect.left;
-            movingDiv.style.top = topPosition + 'px';
-            movingDiv.style.left = leftPosition + 'px';
-        }
-    
-        // Initial position when the page loads
-        window.addEventListener('load', positionDivAboveStartButton);
-    
-        // Re-position when 'Start' button is clicked
-        startButton.addEventListener('click', () => {
-            isMoving = true;
-            positionDivAboveStartButton();
-            notification.style.display = 'block'; // Show notification
-        });
-    
-        // Hide notification when 'Exit' button is clicked
-        exitButton.addEventListener('click', () => {
-            isMoving = false;
-            positionDivAboveStartButton(); // Reset and position the div
-            notification.style.display = 'none'; // Hide notification
-        });
-    
-        closeNotification.addEventListener('click', () => {
-            notification.style.display = 'none'; // Hide notification
-        });
-    
-        document.addEventListener('keydown', (event) => {
-            if (!isMoving) return;
-    
-            switch (event.key) {
-                case 'ArrowUp':
-                    topPosition -= 10;
-                    break;
-                case 'ArrowDown':
-                    topPosition += 10;
-                    break;
-                case 'ArrowLeft':
-                    leftPosition -= 10;
-                    break;
-                case 'ArrowRight':
-                    leftPosition += 10;
-                    break;
-            }
-    
-            movingDiv.style.top = topPosition + 'px';
-            movingDiv.style.left = leftPosition + 'px';
-            event.preventDefault(); // Prevent scrolling
-        });
-    </script>
+
+        movingDiv.style.top = topPosition + 'px';
+        movingDiv.style.left = leftPosition + 'px';
+        event.preventDefault(); // Prevent scrolling
+    });
+</script>
+
 
     <!-- Student NAME -->
     <section class="hero is-danger">
