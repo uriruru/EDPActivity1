@@ -187,82 +187,119 @@
             <button id="startButton">Start</button>
             <button id="exitButton">Exit</button>
             <div id="movingDiv" style="width: 100px; height: 100px; background-color: red; position: absolute;"></div>
+            <div id="notification" style="display: none; position: absolute; top: 0; left: 50%; transform: translateX(-50%); padding: 10px; background-color: #444; color: #fff; border-radius: 5px; z-index: 10;">
+                You can now move the red box
+                <button id="closeNotification" style="background: transparent; border: none; color: #fff; font-size: 16px; cursor: pointer; margin-left: 10px;">&times;</button>
+            </div>
         </div>
     </section>
-
+    
     <style>
         button {
             border: 2px solid #000;
-            /* Black border for buttons */
             border-radius: 5px;
-            /* Rounded corners */
             background-color: #fff;
-            /* White background */
             color: #000;
-            /* Black text */
             padding: 10px 20px;
-            /* Padding for size */
             font-size: 16px;
-            /* Font size */
             cursor: pointer;
-            /* Pointer cursor on hover */
             margin: 5px;
-            /* Space between buttons */
         }
-
+    
         button:hover {
             background-color: #f0f0f0;
-            /* Light grey background on hover */
         }
-
+    
         button:active {
             background-color: #ddd;
-            /* Darker grey background on click */
+        }
+    
+        #notification {
+            display: none; /* Hide initially */
+            position: absolute;
+            top: 10px; /* Adjust based on your layout */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            background-color: #444;
+            color: #fff;
+            border-radius: 5px;
+            z-index: 10;
+        }
+    
+        #closeNotification {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 10px;
         }
     </style>
-
+    
     <script>
         const startButton = document.getElementById('startButton');
         const exitButton = document.getElementById('exitButton');
         const movingDiv = document.getElementById('movingDiv');
-        const heroBody = document.querySelector('.hero-body');
+        const notification = document.getElementById('notification');
+        const closeNotification = document.getElementById('closeNotification');
         let isMoving = false;
-        let position = { x: 0, y: 0 };
-
+        let topPosition = 0;
+        let leftPosition = 0;
+    
+        // Position the movingDiv slightly above the startButton
+        function positionDivAboveStartButton() {
+            const startButtonRect = startButton.getBoundingClientRect();
+            topPosition = startButtonRect.top - 110; // Lift the box above by 110px (adjust as needed)
+            leftPosition = startButtonRect.left;
+            movingDiv.style.top = topPosition + 'px';
+            movingDiv.style.left = leftPosition + 'px';
+        }
+    
+        // Initial position when the page loads
+        window.addEventListener('load', positionDivAboveStartButton);
+    
+        // Re-position when 'Start' button is clicked
         startButton.addEventListener('click', () => {
             isMoving = true;
+            positionDivAboveStartButton();
+            notification.style.display = 'block'; // Show notification
         });
-
+    
+        // Hide notification when 'Exit' button is clicked
         exitButton.addEventListener('click', () => {
             isMoving = false;
+            positionDivAboveStartButton(); // Reset and position the div
+            notification.style.display = 'none'; // Hide notification
         });
-
+    
+        closeNotification.addEventListener('click', () => {
+            notification.style.display = 'none'; // Hide notification
+        });
+    
         document.addEventListener('keydown', (event) => {
             if (!isMoving) return;
-
-            const heroBodyRect = heroBody.getBoundingClientRect();
-            const movingDivRect = movingDiv.getBoundingClientRect();
-
+    
             switch (event.key) {
                 case 'ArrowUp':
-                    if (movingDivRect.top > heroBodyRect.top) position.y -= 10;
+                    topPosition -= 10;
                     break;
                 case 'ArrowDown':
-                    if (movingDivRect.bottom < heroBodyRect.bottom) position.y += 10;
+                    topPosition += 10;
                     break;
                 case 'ArrowLeft':
-                    if (movingDivRect.left > heroBodyRect.left) position.x -= 10;
+                    leftPosition -= 10;
                     break;
                 case 'ArrowRight':
-                    if (movingDivRect.right < heroBodyRect.right) position.x += 10;
+                    leftPosition += 10;
                     break;
             }
-
-            movingDiv.style.transform = `translate(${position.x}px, ${position.y}px)`;
+    
+            movingDiv.style.top = topPosition + 'px';
+            movingDiv.style.left = leftPosition + 'px';
             event.preventDefault(); // Prevent scrolling
         });
     </script>
-
 
     <!-- Student NAME -->
     <section class="hero is-danger">
